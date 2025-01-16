@@ -1,36 +1,16 @@
-import React, { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import EmployeeServices from "./Axios/EmployeeServices";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
-import { setProfile } from "../Redux/Slice/userSlice";
+import { useGetProfile } from "../hooks/useGetProfile";
 
 const GetProfile = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const dispatch = useDispatch();
 
-  const {
-    data: profile,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["profile", isAuthenticated],
-    queryFn: EmployeeServices.getProfile,
-    staleTime: 0,
-    cacheTime: 0,
-    enabled: isAuthenticated,
-    onError: (error) => console.log(error),
-    onSuccess: (data) => console.log(data),
-  });
+  const { profile, isLoading, isError, error } = useGetProfile();
 
-  useEffect(() => {
-    if (profile?.user) {
-      dispatch(setProfile(profile?.user));
-    }
-  }, [profile, dispatch]);
+ 
 
   if (isLoading) {
     return (

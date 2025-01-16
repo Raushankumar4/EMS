@@ -1,25 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useGetAllWorkers } from "../../hooks/useGetAllWorker";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const GetAllWorker = () => {
+  const navigate = useNavigate();
   const { allWorker, isError, isLoading, error, status } = useGetAllWorkers();
-
-  const { profile: user } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (user?.role !== "admin") {
-      window.location.href = "/login";
-    }
-  }, [user]);                                                                       
-  
 
   if (isError) {
     return <p className="text-center text-lg text-red-500">{error.message}</p>;
   }
+
+  const handleNavigate = (id) => {
+    navigate("/worker-dashboard/" + id);
+  };
 
   if (isLoading) {
     return (
@@ -70,7 +66,10 @@ const GetAllWorker = () => {
 
               {/* Buttons */}
               <div className="flex justify-between space-x-4 mt-auto">
-                <button className="flex-1 px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none transition duration-300">
+                <button
+                  onClick={() => handleNavigate(worker?._id)}
+                  className="flex-1 px-6 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none transition duration-300"
+                >
                   Assign Work
                 </button>
                 <button className="flex-1 px-6 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none transition duration-300">

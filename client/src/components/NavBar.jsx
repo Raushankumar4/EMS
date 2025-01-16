@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DarKMode from "./DarKMode";
 import { useSelector } from "react-redux";
 import { Logout } from "./Logout";
@@ -9,6 +9,11 @@ const NavBar = () => {
   const [show, setShow] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/");
+  };
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const HandleLogout = Logout();
@@ -97,7 +102,7 @@ const NavBar = () => {
 
       {/* Desktop Menu */}
       <div className="hidden lg:flex justify-between items-center px-8 py-4 w-full">
-        <h1 className="text-2xl font-bold text-blue-600">
+        <h1 onClick={handleNavigate} className="text-2xl cursor-pointer font-bold text-blue-600">
           Employee Management
         </h1>
         <div className="flex items-center space-x-6">

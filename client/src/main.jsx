@@ -8,15 +8,28 @@ import store from "./Redux/store.js";
 import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";
 import { Toaster } from "react-hot-toast";
-import Login from "./components/Login.jsx";
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import RegisterUser from "./components/RegisterUser.jsx";
-import UpdateProfile from "./components/UpdateProfile.jsx";
-import GetProfile from "./components/GetProfile.jsx";
-import Home from "./components/Home.jsx";
-import EmployeDashBoad from "./components/EmployeDashBoad.jsx";
-import AdminDashBoard from "./components/Amin/AdminDashBoard.jsx";
+import Loading from "./components/Loading/Loading.jsx";
+
+const Login = lazy(() => import("./components/Login.jsx"));
+const RegisterUser = lazy(() => import("./components/RegisterUser.jsx"));
+const UpdateProfile = lazy(() => import("./components/UpdateProfile.jsx"));
+const GetProfile = lazy(() => import("./components/GetProfile.jsx"));
+const AdminDashBoard = lazy(() =>
+  import("./components/Amin/AdminDashBoard.jsx")
+);
+const EmployeDashBoad = lazy(() => import("./components/EmployeDashBoad.jsx"));
+const AssignWork = lazy(() => import("./components/Amin/Work/AssignWork.jsx"));
+const Home = lazy(() => import("./components/Home.jsx"));
+const WorkerDashBoard = lazy(() =>
+  import("./components/Amin/Work/WorkerDashBoard.jsx")
+);
+
+const UpadateWork = lazy(() =>
+  import("./components/Amin/Work/UpadateWork.jsx")
+);
 
 const router = createBrowserRouter([
   {
@@ -26,35 +39,88 @@ const router = createBrowserRouter([
     children: [
       {
         path: "login",
-        element: <Login />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Login />
+          </Suspense>
+        ),
       },
       {
         path: "register",
-        element: <RegisterUser />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <RegisterUser />
+          </Suspense>
+        ),
       },
       {
         path: "updateProfile",
-        element: <UpdateProfile />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <UpdateProfile />
+          </Suspense>
+        ),
       },
       {
         path: "profile",
-        element: <GetProfile />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <GetProfile />
+          </Suspense>
+        ),
       },
       {
         index: true,
-        element: <Home />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Home />
+          </Suspense>
+        ),
       },
       {
         path: "admin-dashboard",
-        element: <AdminDashBoard />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <AdminDashBoard />
+          </Suspense>
+        ),
       },
       {
         path: "dashboard",
-        element: <EmployeDashBoad />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <EmployeDashBoad />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/worker-dashboard/:id",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <WorkerDashBoard />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/worker-dashboard/:id/create-work",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <AssignWork />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/update-work/:id",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <UpadateWork />
+          </Suspense>
+        ),
       },
     ],
   },
 ]);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -63,8 +129,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// const queryClient = new QueryClient();
 
 const persistor = persistStore(store);
 

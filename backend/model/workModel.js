@@ -13,8 +13,6 @@ const TaskSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      trim: true,
-      maxlength: 500,
     },
     dueDate: {
       type: Date,
@@ -23,6 +21,10 @@ const TaskSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "in-progress", "completed"],
       default: "pending",
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }

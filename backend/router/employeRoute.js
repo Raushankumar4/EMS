@@ -30,6 +30,6 @@ router
 router.route("/getProfile").get(isAuthenticated, getProfile);
 router.route("/updateProfile").put(isAuthenticated, updateProfile);
 
-router.route("/getAllUser").get(isAuthenticated, isAdmin, getAllUser);
+router.route("/getAllUser").get(isAuthenticated, getAllUser);
 
 module.exports = router;

@@ -28,7 +28,6 @@ export const useGetAllWorkers = () => {
   useEffect(() => {
     if (allWorker) {
       dispatch(setUsers({ allUsers: allWorker?.user }));
-      console.log("All users:", allWorker?.user)
     }
   }, [allWorker, dispatch]);
 

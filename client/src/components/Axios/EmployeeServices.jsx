@@ -7,6 +7,9 @@ const EmployeeServices = {
   updateUserProfile(data) {
     return requests.put("/employee/updateProfile", data);
   },
+  getMyTask(id) {
+    return requests.get(`employee/getMyTask/${id}`);
+  },
   registerUser(data) {
     return requests.post("/user/register", data);
   },
