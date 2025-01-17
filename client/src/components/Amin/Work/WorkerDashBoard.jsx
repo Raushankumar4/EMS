@@ -12,7 +12,8 @@ import {
 } from "react-chartjs-2";
 import { useGetAllTasks } from "../../../hooks/useGetAllTask";
 import { Link, useParams } from "react-router-dom";
-import MyTask from "../../MyTask"
+import MyTask from "../../MyTask";
+import { useGetProfile } from "../../../hooks/useGetProfile";
 
 const WorkerDashBoard = () => {
   const calculateDaysLeft = (dueDate) => {
@@ -31,6 +32,7 @@ const WorkerDashBoard = () => {
   defaults.plugins.title.color = "black";
   const { id } = useParams();
 
+  const { profile: user } = useGetProfile();
   const { myTasks, isLoading, isError, error, status } = useGetAllTasks(id);
 
   if (isLoading) return <p className="text-center text-lg">Loading...</p>;
@@ -40,13 +42,21 @@ const WorkerDashBoard = () => {
 
   return (
     <>
-      <div className="bg-gray-50 min-h-[50vh] p-8">
-        <Link
-          to="create-work"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Add Work
-        </Link>
+      <div className="bg-gray-50 min-h-[40vh] p-8">
+        {user?.user?.role === "admin" && (
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold text-indigo-700">
+              Admin Dashboard
+            </h1>
+            <Link
+              to="create-work"
+              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md"
+            >
+              Add Task
+            </Link>
+          </div>
+        )}
+
         <div className=" min-h-[40vh]">
           {myTasks?.task?.length > 0 ? (
             <Line
@@ -79,9 +89,7 @@ const WorkerDashBoard = () => {
         </div>
       </div>
       <div className="p-4">
-  
-          <MyTask myTasks={myTasks?.task} />
-     
+        <MyTask />
       </div>
     </>
   );

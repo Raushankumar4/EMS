@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { useDeleteTask } from "../hooks/useDeleteTask";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useMarkAsCompleted } from "../hooks/useMarkAsCompleted";
+import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
 
-const MyTask = ({ myTasks }) => {
+const MyTask = memo(() => {
   const { mutate: deleteTask, isLoading } = useDeleteTask();
-  const { profile: user } = useSelector((state) => state.user);
-  console.log(user);
-
- 
+  const { mutate: markAsCompleted } = useMarkAsCompleted();
+  const { updateWorkStatus } = useUpdateTaskStatus();
+  const { profile: user, allTasks: myTasks } = useSelector(
+    (state) => state.user
+  );
 
   const calculateDaysLeft = (dueDate) => {
     const currentDate = new Date();
@@ -53,25 +56,89 @@ const MyTask = ({ myTasks }) => {
               {/* Right Section - Task Actions (on the left side for RTL) */}
               <div className="flex mx-4 flex-col space-y-4 w-full sm:w-1/3 bg-gradient-to-b from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg">
                 <h2 className="text-2xl font-semibold text-white">
-                  Task Actions
-                </h2>
-                <button className="w-full px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-colors duration-300">
-                  Mark as Completed
-                </button>
-
-                <Link
-                  to={`/update-work`}
-                  className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300 text-center"
-                >
-                  Update Work Status : {task?.status.toUpperCase()}
-                </Link>
-                <button className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg shadow-md hover:bg-yellow-700 transition-colors duration-300">
-                  {daysLeft === 0
-                    ? "Overdue"
-                    : daysLeft === 1
-                    ? `Time Left : ${timeLeft.hoursLeft}h ${timeLeft.minutesLeft}m`
+                  {task?.status === "completed"
+                    ? "Congratulations You Have Completed The Task"
+                    : daysLeft === 0
+                    ? "Overdue ❌"
                     : `Days Left : ${daysLeft}`}
-                </button>
+                </h2>
+                {task?.status === "in-progress" ||
+                task?.status === "completed" ? (
+                  <button
+                    disabled={daysLeft === 0}
+                    onClick={() => markAsCompleted(task?._id)}
+                    className={`w-full px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-colors duration-300 ${
+                      daysLeft === 0
+                        ? "line-through opacity-80 bg-red-600 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    {daysLeft === 0
+                      ? "You are up to date 😢"
+                      : task?.status === "completed"
+                      ? "Mark As Incomplete "
+                      : "Mark As Completed "}
+                  </button>
+                ) : (
+                  task?.status === "pending" && (
+                    <button
+                      disabled={daysLeft === 0}
+                      onClick={() => updateWorkStatus(task?._id)}
+                      className={`w-full px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300 ${
+                        daysLeft === 0
+                          ? "line-through opacity-80 bg-red-600 cursor-not-allowed"
+                          : ""
+                      }`}
+                    >
+                      Start Work
+                    </button>
+                  )
+                )}
+
+                {task?.status === "completed" ? (
+                  <div className="flex flex-col space-y-4 bg-green-100 p-4 rounded-lg border border-green-500 shadow-lg">
+                    <h1 className="text-xl font-semibold text-green-700">
+                      🎉 You Have Completed The Task!
+                    </h1>
+                    <p className="text-md text-green-600">
+                      Congratulations on finishing the task. Keep up the great
+                      work!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-4">
+                    <button
+                      disabled={
+                        task?.status === "completed" ||
+                        daysLeft === 0 ||
+                        task?.status === "pending"
+                      }
+                      onClick={() => updateWorkStatus(task?._id)}
+                      className={`w-full px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300 text-center
+                ${
+                  task?.status === "completed" || daysLeft === 0
+                    ? "line-through opacity-80 bg-red-600 cursor-not-allowed"
+                    : ""
+                }`}
+                    >
+                      Update Work Status : {task?.status.toUpperCase()}
+                    </button>
+                    <button
+                      disabled={task?.status === "completed" || daysLeft === 0}
+                      className={`w-full px-4 py-2 bg-yellow-600 text-white rounded-lg shadow-md hover:bg-yellow-700 transition-colors duration-300 ${
+                        task?.status === "completed" || daysLeft === 0
+                          ? "line-through opacity-80 bg-red-600 cursor-not-allowed"
+                          : ""
+                      }`}
+                    >
+                      {daysLeft === 0
+                        ? "Overdue"
+                        : daysLeft === 1
+                        ? `Time Left : ${timeLeft.hoursLeft}h ${timeLeft.minutesLeft}m`
+                        : `Days Left : ${daysLeft}`}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Left Section - Task Details (on the right side for RTL) */}
@@ -126,16 +193,14 @@ const MyTask = ({ myTasks }) => {
                   {formatDate(task?.createdAt)}
                 </h1>
               </div>
-              
             </div>
           );
         })
       ) : (
         <p className="text-center text-lg text-gray-600">No tasks found</p>
       )}
-      
     </div>
   );
-};
+});
 
 export default MyTask;

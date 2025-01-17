@@ -16,6 +16,12 @@ const EmployeeServices = {
   loginUser(data) {
     return requests.post("/user/login", data);
   },
+  markAsCompleted(id) {
+    return requests.put(`/employee/markAsCompleted/${id}`);
+  },
+  updateTaskStatus(id) {
+    return requests.put(`/employee/updateTaskStatus/${id}`);
+  },
 };
 
 export default EmployeeServices;

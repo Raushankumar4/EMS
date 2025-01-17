@@ -26,7 +26,7 @@ export const useGetProfile = () => {
   });
 
   useEffect(() => {
-    if (profile?.user) {
+    if (profile && profile?.user) {
       dispatch(setProfile(profile?.user));
     }
   }, [profile, dispatch]);

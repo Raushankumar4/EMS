@@ -15,6 +15,8 @@ const NavBar = () => {
     navigate("/");
   };
 
+  const { profile: user } = useSelector((state) => state.user);
+
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const HandleLogout = Logout();
 
@@ -102,7 +104,10 @@ const NavBar = () => {
 
       {/* Desktop Menu */}
       <div className="hidden lg:flex justify-between items-center px-8 py-4 w-full">
-        <h1 onClick={handleNavigate} className="text-2xl cursor-pointer font-bold text-blue-600">
+        <h1
+          onClick={handleNavigate}
+          className="text-2xl cursor-pointer font-bold text-blue-600"
+        >
           Employee Management
         </h1>
         <div className="flex items-center space-x-6">
@@ -138,7 +143,11 @@ const NavBar = () => {
               >
                 <Link
                   onClick={() => setShow(false)}
-                  to="/dashboard"
+                  to={`${
+                    user && user?.role === "admin"
+                      ? "admin-dashboard"
+                      : "dashboard"
+                  }`}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Dashboard

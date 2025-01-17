@@ -61,7 +61,7 @@ const markTaskAsCompleted = ErrorHandler(async (req, res) => {
 
   const task = await Task.findById(taskId);
   const user = await User.findById(task.employeId);
-  if (task.status === "pending") {
+  if (task.status === "pending" || task.status === "in-progress") {
     task.status = "completed";
     user.totalCompletedTask.push(task._id);
     const index = user.unCompletedTask.indexOf(taskId);

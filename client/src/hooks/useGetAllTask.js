@@ -15,7 +15,7 @@ export const useGetAllTasks = (id) => {
     error,
     status,
   } = useQuery({
-    queryKey: ["myTask", id],
+    queryKey: ["myTask"],
     queryFn: () => EmployeeServices.getMyTask(id),
     enabled: !!id,
     staleTime: 0,
@@ -29,7 +29,7 @@ export const useGetAllTasks = (id) => {
   });
 
   useEffect(() => {
-    dispatch(setALlTasks({ allTasks: myTasks?.task }));
-  }, [dispatch, id]);
+    dispatch(setALlTasks(myTasks?.task));
+  }, [dispatch, myTasks]);
   return { myTasks, isLoading, isError, error, status };
 };
